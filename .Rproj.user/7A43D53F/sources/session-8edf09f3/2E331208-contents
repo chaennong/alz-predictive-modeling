@@ -1,0 +1,237 @@
+---
+title: Analysis of HDL(High-Density Lipoprotein) Cholesterol Level and Cognitive and Functional Assessments
+author: Chaeeun Shin
+output: html_document
+---
+## Introduction
+High-density lipoprotein (HDL) cholesterol has traditionally been considered protective for cardiovascular health. However, recent studies have suggested a potential association between very high HDL levels and an increased risk of dementia, including Alzheimer’s disease.
+
+During the exploratory data analysis (EDA) of this dataset, a higher proportion of participants diagnosed with Alzheimer’s disease was observed among individuals with HDL levels exceeding 80 mg/dL, compared to those without a diagnosis. This observation motivated further investigation into whether HDL cholesterol levels are associated with cognitive and functional impairment.
+
+The primary objective of this analysis is to evaluate the relationship between categorized HDL cholesterol levels and multiple cognitive and functional assessment outcomes, as well as development of neurodegenerative symptoms.
+
+---
+
+## Methods
+### HDL Cholesterol Cateogrization
+Each patient's HDL cholesterol level was categorized into one of three groups based on sex-specific clinical thresholds:
+
+- **High HDL**
+  - HDL > 80 mg/dL
+
+- **Optimal HDL**
+  - Males: 40–80 mg/dL  
+  - Females: 50–80 mg/dL
+
+- **Low HDL**
+  - Males: < 40 mg/dL  
+  - Females: < 50 mg/dL
+  
+### Outcome Measures
+The following cognitive and functional assessments were analyzed:
+
+1. **MMSE (Mini-Mental State Examination)**
+  - Range: 0-30
+  - Lower scores indicate greater cognitive impairment
+
+2. **Functional Assessment Score**
+   - Range: 0–10  
+   - Lower scores indicate greater functional impairment
+
+3. **Memory Complaints**
+   - Binary variable (0 = No, 1 = Yes)
+
+4. **Behavioral Problems**
+   - Binary variable (0 = No, 1 = Yes)
+
+5. **ADL (Activities of Daily Living) Score**
+   - Range: 0–10  
+   - Lower scores indicate greater impairment
+   
+The following neurodegenerative symptoms were analyzed:
+
+1. **Confusion**
+  - Binary variable (0 = No, 1 = Yes)
+  
+2. **Disorientation**
+  - Binary variable (0 = No, 1 = Yes)
+  
+3. **Personality Changes**
+  - Binary variable (0 = No, 1 = Yes)
+  
+4. **Difficulty in Completing Tasks**
+  - Binary variable (0 = No, 1 = Yes)
+  
+5. **Forgetfulness**
+  - Binary variable (0 = No, 1 = Yes)
+
+### Statistical Analysis
+
+- **Two-sample pooled t-tests** were used to compare mean scores of:
+  - MMSE
+  - Functional Assessment
+  - ADL  
+  between the **High HDL** and **Optimal HDL** groups.
+
+- **Two-sample proportion z-tests** were used to compare the prevalence of:
+  - Memory complaints
+  - Behavioral problems
+  - Confusion
+  - Disorientation
+  - Personality Changes
+  - Difficulty in Completing Tasks
+  - Forgetfulness  
+  between the **High HDL** and **Optimal HDL** groups.
+
+All hypothesis tests were conducted at a **5% significance level**, with one-sided alternatives testing whether high HDL cholesterol is associated with greater impairment. The function of testing statistical tests was generated using basic R function, without installing additional packages except ggplot2. 
+
+---
+
+## Results
+
+### Distribution of HDL Cholesterol Levels
+
+The density plot of HDL cholesterol levels showed a right-skewed distribution, with a clinically meaningful proportion of participants exceeding the high HDL threshold of 80 mg/dL.
+
+In this dataset:
+- **509 participants** were classified as having high HDL cholesterol
+- **936 participants** had optimal HDL levels
+- **704 participants** had low HDL levels
+
+### Cognitive and Functional Outcomes
+
+- **MMSE Scores**  
+  No statistically significant difference in mean MMSE scores was observed between the high and optimal HDL groups.
+
+- **Functional Assessment Scores**  
+  Mean functional assessment scores did not differ significantly between HDL groups.
+
+- **ADL Scores**  
+  No evidence was found to suggest greater impairment in activities of daily living among participants with high HDL cholesterol.
+
+### Binary Outcomes
+
+- **Memory Complaints**  
+  The proportion of participants reporting memory complaints was not significantly higher in the high HDL group compared to the optimal HDL group.
+
+- **Behavioral Problems**  
+  No statistically significant association was observed between high HDL cholesterol levels and the presence of behavioral problems.
+
+- **Confusion**
+  No statistically difference in proportion of patients with confusion between the high and optimal HDL groups.
+
+- **Disorientation**
+  No evidence was found to suggest greater proportion of disorientation among participants with high HDL groups.
+
+- **Personality Changes**
+  The proportion of participants reporting personality changes did not differ significantly between high and optimal HDL groups.
+  
+- **Difficulty in Completing Tasks**
+  There was no statistically significant association between difficulty in completing tasks and high HDL cholesterol.
+  
+
+- **Forgetfulness**
+  The proportion of participants reporting forgetfulness was not significantly higher among the high HDL group compared to the optimal HDL group.
+
+Across all outcomes, the null hypothesis of no association could not be rejected.
+
+---
+
+## Conclusion
+
+This analysis found no strong evidence supporting an association between high HDL cholesterol levels and worsened cognitive or functional outcomes, as well as neurodegenerative symptoms. While descriptive patterns suggested a higher prevalence of Alzheimer’s disease diagnoses among individuals with very high HDL levels, formal analyses of cognitive functional assessments and symtpoms did not confirm a clinically meaningful relationship.
+
+These findings suggest that restricting HDL cholesterol solely for the purpose of dementia or Alzheimer’s disease prevention may not be appropriate, based on the evidence from this dataset. Further research using longitudinal data and adjustment for potential confounders would be necessary to clarify the role of HDL cholesterol in neurodegenerative disease risk.
+
+
+# Load data and brief overview
+```{r}
+r_files <- list.files(here::here("R"), pattern = "\\.R$", full.names = TRUE)
+sapply(r_files, source)
+data <- read.csv(here::here("data", "alzheimers_disease_data.csv"))
+```
+```{r}
+data <- preprocess(data = data)
+high <- split_hdl(data)$high
+optimal <- split_hdl(data)$optimal
+low <- split_hdl(data)$low
+```
+
+```{r}
+library(ggplot2)
+p <- ggplot(data, aes(x=CholesterolHDL)) +
+  geom_density(color="black", fill = 'lightblue') +
+  geom_vline(aes(xintercept=80), color = 'blue', linetype = 'dashed', linewidth = 1)
+print(p)
+```
+The figure above shows a density of patient's LDL cholesterol level. Dashed line is 80 mg/dL, where borderline for high HDL cholesterol level. 
+
+# Statistical Test
+```{r}
+pooled_t_test(optimal$MMSE, high$MMSE, outcome_name = "MMSE Score")
+```
+
+```{r}
+pooled_t_test(optimal$FunctionalAssessment, high$FunctionalAssessment, outcome_name = "Functional Assessment Score")
+```
+
+```{r}
+pooled_t_test(optimal$ADL, high$ADL, outcome_name = "ADL Score")
+```
+
+```{r}
+a <- nrow(high[high$MemoryComplaints == 1, ])
+b <- nrow(high[high$MemoryComplaints == 0, ])
+c <- nrow(optimal[optimal$MemoryComplaints == 1, ])
+d <- nrow(optimal[optimal$MemoryComplaints == 0, ])
+proportion_z_test(a, b, c, d, outcome_name = "Memory Complaints")
+```
+
+```{r}
+a <- nrow(high[high$BehavioralProblems == 1, ])
+b <- nrow(high[high$BehavioralProblems == 0, ])
+c <- nrow(optimal[optimal$BehavioralProblems == 1, ])
+d <- nrow(optimal[optimal$BehavioralProblems == 0, ])
+proportion_z_test(a, b, c, d, outcome_name = "Behavioral Problems")
+```
+
+```{r}
+a <- nrow(high[high$Confusion==1,])
+b <- nrow(high[high$Confusion==0,])
+c <- nrow(optimal[optimal$Confusion==1,])
+d <- nrow(optimal[optimal$Confusion==0,])
+proportion_z_test(a, b, c, d, outcome_name = "Confusion")
+```
+
+```{r}
+a <- nrow(high[high$Disorientation==1,])
+b <- nrow(high[high$Disorientation==0,])
+c <- nrow(optimal[optimal$Disorientation==1,])
+d <- nrow(optimal[optimal$Disorientation==0,])
+proportion_z_test(a, b, c, d, outcome_name = "Disorientation")
+```
+
+```{r}
+a <- nrow(high[high$PersonalityChanges==1,])
+b <- nrow(high[high$PersonalityChanges==0,])
+c <- nrow(optimal[optimal$PersonalityChanges==1,])
+d <- nrow(optimal[optimal$PersonalityChanges==0,])
+proportion_z_test(a, b, c, d, outcome_name = "Personality Changes")
+```
+
+```{r}
+a <- nrow(high[high$DifficultyCompletingTasks==1,])
+b <- nrow(high[high$DifficultyCompletingTasks==0,])
+c <- nrow(optimal[optimal$DifficultyCompletingTasks==1,])
+d <- nrow(optimal[optimal$DifficultyCompletingTasks==0,])
+proportion_z_test(a, b, c, d, outcome_name = "Difficulty in Completing Tasks")
+```
+
+```{r}
+a <- nrow(high[high$Forgetfulness==1,])
+b <- nrow(high[high$Forgetfulness==0,])
+c <- nrow(optimal[optimal$Forgetfulness==1,])
+d <- nrow(optimal[optimal$Forgetfulness==0,])
+proportion_z_test(a, b, c, d, outcome_name = "Forgetfulness")
+```
+```
