@@ -1,5 +1,5 @@
 ---
-title: "modeling_report"
+title: "Predictive modeling of diagnosis status for Alzheimer's disease"
 author: Chaeeun Shin
 output: html_document
 ---
@@ -11,20 +11,21 @@ The objective of this study is to develop and compare several predictive models 
 ### Results
 The full logistic regression model included all candidate predictors, while the stepwise model reduced model complexity by excluding less informative variables. 
 
-The stepwise model included folllowing predictors:
+The stepwise model included following predictors:  
 
-1.**Age**
-2. **LDL Cholesterol level**
-3. **MMSE (Mini-Mental State Examination)**
-4. **Functional assessment score**
-5. **Presence of memory complaints**
-6. **Presence of behavioral problems**
-7. **ADL (Acticities of Daily Living) score**
+1. **Age**   
+2. **LDL Cholesterol level**   
+3. **MMSE (Mini-Mental State Examination)**  
+4. **Functional assessment score**  
+5. **Presence of memory complaints**  
+6. **Presence of behavioral problems**  
+7. **ADL (Activities of Daily Living) score** 
 
 The Lasso and Elastic Net models further performed automatic variable selection through coefficient shrinkage.
 
-Below are the evlaluation of model performance.
-1. **Baseline model (full logistic regression)**
+Below are the evaluation of model performance. 
+
+1. **Baseline model (full logistic regression)**  
   - AUC: 0.9036
   - Threshold: 0.5211
   - Sensitivity: 0.9279
@@ -44,14 +45,13 @@ Below are the evlaluation of model performance.
   - Threshold: 0.5204
   - Sensitivity: 0.9351
   
-Model performance was primarily compared using ROC–AUC to assess overall discriminative ability. In addition, sensitivity was evaluated at model-specific optimal thresholds derived from the ROC curve. While the optimal thresholds differed across models, they were not directly compared, as threshold values depend on the predicted probability scale rather than intrinsic model performance.
+   Model performance was primarily compared using ROC–AUC to assess overall discriminative ability. In addition, sensitivity was evaluated at model-specific optimal thresholds derived from the ROC curve. While the optimal thresholds differed across models, they were not directly compared, as threshold values depend on the predicted probability scale rather than intrinsic model performance.
 
-All models demonstrated strong discriminative performance, with ROC–AUC values exceeding 0.90. The stepwise model achieved the highest ROC–AUC (0.9071), followed closely by the LASSO (0.9065), Elastic Net (0.9056), and the baseline full logistic regression model (0.9036). The similarity of AUC values suggests that all models were comparably effective in distinguishing between Alzheimer’s and non-Alzheimer’s cases.
+  All models demonstrated strong discriminative performance, with ROC–AUC values exceeding 0.90. The stepwise model achieved the highest ROC–AUC (0.9071), followed closely by the LASSO (0.9065), Elastic Net (0.9056), and the baseline full logistic regression model (0.9036). The similarity of AUC values suggests that all models were comparably effective in distinguishing between Alzheimer’s and non-Alzheimer’s cases.
 
-Despite similar AUC performance, sensitivity varied across models at their respective optimal thresholds. The Elastic Net model achieved the highest sensitivity (0.9351) at a threshold of 0.5204, indicating the strongest ability to correctly identify patients with Alzheimer’s disease. The baseline full logistic regression model also showed high sensitivity (0.9279) at a threshold of 0.5211. In contrast, the stepwise model exhibited substantially lower sensitivity (0.8005) at a lower threshold of 0.2991, suggesting a higher rate of false negatives despite its slightly higher AUC. The LASSO model demonstrated a balance between discrimination and sensitivity, achieving a sensitivity of 0.8918 at a threshold of 0.4543.
+  Despite similar AUC performance, sensitivity varied across models at their respective optimal thresholds. The Elastic Net model achieved the highest sensitivity (0.9351) at a threshold of 0.5204, indicating the strongest ability to correctly identify patients with Alzheimer’s disease. The baseline full logistic regression model also showed high sensitivity (0.9279) at a threshold of 0.5211. In contrast, the stepwise model exhibited substantially lower sensitivity (0.8005) at a lower threshold of 0.2991, suggesting a higher rate of false negatives despite its slightly higher AUC. The LASSO model demonstrated a balance between discrimination and sensitivity, achieving a sensitivity of 0.8918 at a threshold of 0.4543.
 
-Overall, while ROC–AUC values were similar across models, regularized regression methods—particularly the Elastic Net—provided improved sensitivity, highlighting their potential advantage in clinical screening contexts where minimizing missed Alzheimer’s cases is a priority.
-
+  Overall, while ROC–AUC values were similar across models, regularized regression methods—particularly the Elastic Net—provided improved sensitivity, highlighting their potential advantage in clinical screening contexts where minimizing missed Alzheimer’s cases is a priority.
 
 ```{r}
 r_files <- list.files(here::here("R"), pattern = "\\.R$", full.names = TRUE)
